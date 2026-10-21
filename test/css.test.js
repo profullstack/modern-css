@@ -6,10 +6,11 @@ const read = (f) => readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
 const strip = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '');
 const css = strip(read('modern.css'));
 const tw = strip(read('tailwind.css'));
+const fn = strip(read('functions.css'));
 const pkg = JSON.parse(read('package.json'));
 
 test('braces balance in every stylesheet', () => {
-  for (const [name, src] of [['modern.css', css], ['tailwind.css', tw]]) {
+  for (const [name, src] of [['modern.css', css], ['tailwind.css', tw], ['functions.css', fn]]) {
     let depth = 0;
     for (const ch of src) {
       if (ch === '{') depth++;
@@ -21,8 +22,8 @@ test('braces balance in every stylesheet', () => {
 });
 
 test('every rule sits inside the components layer', () => {
-  const trimmed = css.trim();
-  assert.ok(trimmed.startsWith('@layer components {'), 'modern.css must open with @layer components');
+  const trimmed = css.trim().replace(/^@import "\.\/functions\.css";\s*/, '');
+  assert.ok(trimmed.startsWith('@layer components {'), 'modern.css must open with the functions import, then @layer components');
   let depth = 0;
   let topLevel = 0;
   for (const ch of trimmed) {
@@ -66,4 +67,12 @@ test('every exported file exists and is packed', () => {
     if (f !== 'package.json') assert.ok(files.has(f), `${f} exported but not in files`);
     read(f);
   }
+});
+
+test('functions.css defines the documented typed functions inside the layer', () => {
+  assert.ok(fn.trim().startsWith('@layer components {'));
+  for (const name of ['alpha', 'tint', 'shade', 'inner-radius', 'fluid']) {
+    assert.match(fn, new RegExp(`@function --${name}\\([^)]*\\) returns <[a-z]+>`), `--${name} missing or untyped`);
+  }
+  assert.match(css, /^\s*@import "\.\/functions\.css";/, 'modern.css must pull in functions.css first');
 });

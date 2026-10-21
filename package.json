@@ -1,23 +1,54 @@
 {
   "name": "@profullstack/modern-css",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "description": "Subgrid cards, squircle corners, stuck headers, grid gap rules, height:auto accordions and reading-flow as opt-in classes. Progressive enhancement only, in the components layer, for plain CSS and Tailwind 4.",
-  "keywords": ["css", "subgrid", "corner-shape", "squircle", "scroll-state", "container-queries", "interpolate-size", "gap-decorations", "reading-flow", "tailwind", "interop-2027"],
-  "repository": { "type": "git", "url": "git+https://github.com/profullstack/modern-css.git" },
+  "description": "Subgrid cards, squircle corners, stuck headers, grid gap rules, height:auto accordions and reading-flow as opt-in classes, plus custom @function helpers (--alpha, --tint, --shade, --inner-radius, --fluid). Progressive enhancement only, in the components layer, for plain CSS and Tailwind 4.",
+  "keywords": [
+    "css",
+    "subgrid",
+    "corner-shape",
+    "squircle",
+    "scroll-state",
+    "container-queries",
+    "interpolate-size",
+    "gap-decorations",
+    "reading-flow",
+    "tailwind",
+    "interop-2027",
+    "css-functions"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/profullstack/modern-css.git"
+  },
   "homepage": "https://github.com/profullstack/modern-css#readme",
-  "bugs": { "url": "https://github.com/profullstack/modern-css/issues" },
+  "bugs": {
+    "url": "https://github.com/profullstack/modern-css/issues"
+  },
   "license": "MIT",
   "author": "Profullstack, Inc.",
   "style": "./modern.css",
   "exports": {
     ".": "./modern.css",
     "./modern.css": "./modern.css",
+    "./functions.css": "./functions.css",
     "./tailwind.css": "./tailwind.css",
     "./package.json": "./package.json"
   },
-  "files": ["modern.css", "tailwind.css", "README.md", "LICENSE"],
-  "sideEffects": ["*.css"],
-  "engines": { "node": ">=18" },
-  "scripts": { "test": "node --test" }
+  "files": [
+    "modern.css",
+    "functions.css",
+    "tailwind.css",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
 }

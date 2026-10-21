@@ -7,6 +7,8 @@
  * unlayered CSS and Tailwind utilities always win.
  */
 
+@import "./functions.css";
+
 @layer components {
   /* ---------------------------------------------------------------- subgrid
    * Cards whose rows line up across siblings (title, body, footer at the same

@@ -1,0 +1,37 @@
+/*
+ * Custom CSS functions (@function, css-mixins-1). Chrome/Edge 139+, Safari
+ * Technology Preview; Firefox not yet. A browser without @function drops any
+ * declaration that calls one, so always write the plain value first:
+ *
+ *   border-radius: 8px;
+ *   border-radius: --inner-radius(16px, 8px);
+ */
+
+@layer components {
+  /* A color at an opacity: --alpha(black, 0.6) */
+  @function --alpha(--color <color>, --opacity <number>) returns <color> {
+    result: rgb(from var(--color) r g b / var(--opacity));
+  }
+
+  /* Mix toward white or black: --tint(#e02337, 30%) */
+  @function --tint(--color <color>, --amount <percentage>) returns <color> {
+    result: color-mix(in oklab, var(--color), white var(--amount));
+  }
+
+  @function --shade(--color <color>, --amount <percentage>) returns <color> {
+    result: color-mix(in oklab, var(--color), black var(--amount));
+  }
+
+  /* Radius for something nested inside a rounded box with padding, so the
+   * corners stay concentric: --inner-radius(16px, 6px) = 10px. What inherit()
+   * will do one day, without needing it. */
+  @function --inner-radius(--outer <length>, --padding <length>) returns <length> {
+    result: max(0px, calc(var(--outer) - var(--padding)));
+  }
+
+  /* Size that grows with the viewport between a floor and a ceiling:
+   * font-size: --fluid(1.6rem, 2.4rem) */
+  @function --fluid(--min <length>, --max <length>) returns <length> {
+    result: clamp(var(--min), calc(var(--min) * 0.75 + 1.25vw), var(--max));
+  }
+}

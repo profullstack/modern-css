@@ -60,13 +60,36 @@ Custom properties: `--card-min` (16rem), `--cards-gap` (1.5rem), `--card-gap`
 (0.5rem), `--stuck-bg` (Canvas), `--stuck-shadow`, `--stuck-z` (50), `--rule`,
 `--accordion-speed` (0.25s).
 
+## Custom functions
+
+`modern.css` also defines a few `@function` helpers (also importable alone as
+`@profullstack/modern-css/functions.css`). A browser without `@function` drops
+any declaration that calls one, so write the plain value first:
+
+```css
+.title { font-size: 3.6rem; font-size: --fluid(2.6rem, 3.6rem); }
+.thumb { border-radius: 8px; border-radius: --inner-radius(16px, 8px); }
+.muted { color: #999; color: --alpha(white, 0.6); }
+```
+
+| Function | Returns |
+|---|---|
+| `--alpha(color, opacity)` | the color at that opacity |
+| `--tint(color, %)` / `--shade(color, %)` | the color mixed toward white / black (oklab) |
+| `--inner-radius(outer, padding)` | `outer - padding`, never below 0: concentric nested corners |
+| `--fluid(min, max)` | a length that grows with the viewport between `min` and `max` |
+
+Proposed for Interop 2027 ([web-platform-tests/interop#1357](https://github.com/web-platform-tests/interop/issues/1357)).
+
 ## Support (October 2026)
 
 Subgrid works in every current browser. `corner-shape`, scroll-state queries,
 gap decorations, `interpolate-size` and `reading-flow` are Chrome and Edge only
 for now, which is why each falls back as shown above.
 
-Not included: `@function`, `border-shape`, anchored container queries and
+`@function` is Chrome/Edge 139+ and Safari Technology Preview.
+
+Not included: `border-shape`, anchored container queries and
 scroll-triggered animations are page-specific or still moving, and `inherit()`
 ships in no browser.
 
