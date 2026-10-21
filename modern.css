@@ -1,0 +1,135 @@
+/*
+ * @profullstack/modern-css
+ *
+ * Modern CSS (subgrid + the Interop 2027 set) as opt-in classes. Every rule is
+ * progressive enhancement: a browser without the feature gets the plain layout,
+ * never a broken one. Everything sits in the `components` layer, so a site's own
+ * unlayered CSS and Tailwind utilities always win.
+ */
+
+@layer components {
+  /* ---------------------------------------------------------------- subgrid
+   * Cards whose rows line up across siblings (title, body, footer at the same
+   * height in every card). Set --card-rows to the number of direct children of
+   * each card; a card spans that many parent rows and adopts them as its own.
+   *
+   *   <ul class="subgrid-cards" style="--card-rows: 3">
+   *     <li class="subgrid-card"><h3/><p/><a/></li> ...
+   *
+   * Row subgrid is fine with auto-fill columns; only column subgrid needs an
+   * explicit parent track count. */
+  .subgrid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-min, 16rem)), 1fr));
+    gap: var(--cards-gap, 1.5rem);
+  }
+
+  .subgrid-card {
+    display: grid;
+    grid-row: span var(--card-rows, 3);
+    grid-template-rows: subgrid;
+    /* the parent gap would otherwise also sit between the card's own rows */
+    row-gap: var(--card-gap, 0.5rem);
+    align-content: start;
+  }
+
+  @supports not (grid-template-rows: subgrid) {
+    .subgrid-card {
+      grid-row: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--card-gap, 0.5rem);
+    }
+  }
+
+  /* ----------------------------------------------------------- corner-shape
+   * Falls back to the element's ordinary border-radius. */
+  .squircle {
+    corner-shape: squircle;
+  }
+
+  .corner-bevel {
+    corner-shape: bevel;
+  }
+
+  .corner-notch {
+    corner-shape: notch;
+  }
+
+  .corner-scoop {
+    corner-shape: scoop;
+  }
+
+  /* ----------------------------------------------- scroll-state: stuck header
+   * A container query can only style descendants, so the stuck look goes on
+   * the header's inner wrapper:
+   *
+   *   <header class="stuck-header"><div class="stuck-header-bar">...</div></header>
+   *
+   * Without support the header still sticks, it just never changes look. */
+  .stuck-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--stuck-z, 50);
+    container-type: scroll-state;
+  }
+
+  .stuck-header-bar {
+    transition:
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  @container scroll-state(stuck: top) {
+    .stuck-header-bar {
+      background-color: var(--stuck-bg, Canvas);
+      box-shadow: var(--stuck-shadow, 0 1px 0 color-mix(in srgb, currentColor 12%, transparent), 0 4px 16px -8px rgb(0 0 0 / 0.25));
+    }
+  }
+
+  /* ------------------------------------------------------- gap decorations
+   * Lines between grid/flex cells with no extra DOM. Without support the gap
+   * is just whitespace. */
+  .grid-rules {
+    column-rule: var(--rule, 1px solid color-mix(in srgb, currentColor 15%, transparent));
+    row-rule: var(--rule, 1px solid color-mix(in srgb, currentColor 15%, transparent));
+  }
+
+  /* ---------------------------------------------- interpolate-size accordion
+   * <details class="accordion"> opens and closes by animating to height:auto.
+   * Without support it snaps open, as <details> always has. */
+  @supports (interpolate-size: allow-keywords) {
+    .accordion {
+      interpolate-size: allow-keywords;
+    }
+
+    .accordion::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size var(--accordion-speed, 0.25s) ease,
+        content-visibility var(--accordion-speed, 0.25s) allow-discrete;
+    }
+
+    .accordion[open]::details-content {
+      block-size: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .accordion::details-content {
+      transition: none;
+    }
+  }
+
+  /* ------------------------------------------------------------ reading-flow
+   * Keyboard focus follows the visual order of a reordered grid or flex
+   * layout. Keep the DOM order sensible anyway: other browsers use it. */
+  .reading-flow-grid {
+    reading-flow: grid-rows;
+  }
+
+  .reading-flow-flex {
+    reading-flow: flex-visual;
+  }
+}

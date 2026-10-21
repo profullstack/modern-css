@@ -1,0 +1,9 @@
+/*
+ * Tailwind 4 entry: @import "@profullstack/modern-css/tailwind.css";
+ * after @import "tailwindcss". The classes land in Tailwind's components
+ * layer, so utilities on the same element override them.
+ */
+@import "./modern.css";
+
+/* stuck:bg-white on any descendant of a .stuck-header */
+@custom-variant stuck (@container scroll-state(stuck: top));
